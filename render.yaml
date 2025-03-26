@@ -3,7 +3,7 @@ services:
     name: agora-convo-ai-custom-llm-express
     env: node
     repo: https://github.com/AgoraIO-Community/agora-convo-ai-custom-llm-express
-    region: oregon
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
