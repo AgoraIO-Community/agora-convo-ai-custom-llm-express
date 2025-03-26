@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: agora-convo-ai-custom-llm-express
+    env: node
+    repo: https://github.com/AgoraIO-Community/agora-convo-ai-custom-llm-express
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AGORA_APP_ID
+        sync: false
+      - key: AGORA_APP_CERTIFICATE
+        sync: false
+      - key: AGORA_CUSTOMER_ID
+        sync: false
+      - key: AGORA_CUSTOMER_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        sync: false
+      - key: AGENT_ID
+        sync: false

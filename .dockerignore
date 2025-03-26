@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build output
+dist
+build
+
+# Environment
+.env
+.env.*
+
+# IDE
+.idea
+.vscode
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Misc
+README.md
+LICENSE
+.DS_Store
+Thumbs.db 

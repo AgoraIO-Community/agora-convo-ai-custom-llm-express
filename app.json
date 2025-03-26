@@ -1,0 +1,46 @@
+{
+  "name": "Agora Convo AI Custom LLM Express",
+  "description": "A node-based service layer that accepts incoming requests from the Agora Convo AI service and passes it to an AI model, allowing for RAG and tools",
+  "repository": "https://github.com/AgoraIO-Community/agora-convo-ai-custom-llm-express",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["node", "express", "openai", "agora", "convo-ai"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "AGORA_APP_ID": {
+      "description": "Your Agora App ID",
+      "required": true
+    },
+    "AGORA_APP_CERTIFICATE": {
+      "description": "Your Agora App Certificate",
+      "required": true
+    },
+    "AGORA_CUSTOMER_ID": {
+      "description": "Your Agora Customer ID",
+      "required": true
+    },
+    "AGORA_CUSTOMER_SECRET": {
+      "description": "Your Agora Customer Secret",
+      "required": true
+    },
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API Key",
+      "required": true
+    },
+    "OPENAI_MODEL": {
+      "description": "The OpenAI model to use (e.g., gpt-4o-mini)",
+      "required": true
+    },
+    "AGENT_ID": {
+      "description": "Your Agent ID",
+      "required": true
+    },
+    "NODE_ENV": {
+      "description": "Environment (production, development, etc.)",
+      "value": "production"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Add your environment variables from .env here
+      - AGORA_APP_ID=${AGORA_APP_ID}
+      - AGORA_APP_CERTIFICATE=${AGORA_APP_CERTIFICATE}
+      - AGORA_CUSTOMER_ID=${AGORA_CUSTOMER_ID}
+      - AGORA_CUSTOMER_SECRET=${AGORA_CUSTOMER_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - AGENT_ID=${AGENT_ID}
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
