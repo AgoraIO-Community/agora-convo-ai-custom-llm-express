@@ -10,11 +10,11 @@ export const validateRequest = (req: Request, res: Response, next: NextFunction)
     console.log('Received token:', token)
     console.log('Expected token:', config.llm.openaiApiKey)
     console.log('Token comparison:', token === config.llm.openaiApiKey)
-
-    if (!token || token !== config.llm.openaiApiKey) {
-      return res.status(403).json({ error: 'Invalid or missing token' })
-    }
-
-    next()
   }
+
+  if (!token || token !== config.llm.openaiApiKey) {
+    return res.status(403).json({ error: 'Invalid or missing token' })
+  }
+
+  next()
 }
