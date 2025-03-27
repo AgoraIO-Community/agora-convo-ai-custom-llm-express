@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { config } from '@/libs/utils'
+import { config } from '../libs/utils'
 
 export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization || ''

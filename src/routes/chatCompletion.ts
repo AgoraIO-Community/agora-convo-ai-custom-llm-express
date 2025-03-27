@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express'
-import { processChatCompletion } from '@/services/openaiService'
-import { validateRequest } from '@/middleware/auth'
+import { processChatCompletion } from '../services/openaiService'
+import { validateRequest } from '../middleware/auth'
 import { Readable } from 'stream'
 
 const router = Router()

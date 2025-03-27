@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { config } from '@/libs/utils'
+import { config } from './utils'
 
 interface PeerMessageResponse {
   data: any
