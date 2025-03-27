@@ -16,6 +16,9 @@
   "author": "digitallysavvy",
   "license": "MIT",
   "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -26,9 +29,6 @@
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/morgan": "^1.9.9",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
