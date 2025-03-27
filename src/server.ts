@@ -20,6 +20,13 @@ const v1Router = express.Router()
 v1Router.use('/chat', chatCompletionRouter)
 app.use('/v1', v1Router)
 
+app.get('/', (req, res) => {
+  res.json({
+    message:
+      'Welcome to a custom LLM using OpenAI API and built for Agora Convo AI Engine! Documentation is available at https://github.com/AgoraIO-Community/agora-convo-ai-custom-llm-express',
+  })
+})
+
 // Health check endpoint
 app.get('/ping', (req, res) => {
   res.json({ message: 'pong' })
