@@ -131,7 +131,7 @@ Response:
 { "message": "pong" }
 ```
 
-### POST `/chat/completion`
+### POST `/v1/chat/completion`
 
 Handles chat completion requests with optional streaming support.
 
