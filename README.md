@@ -148,6 +148,30 @@ Request Body:
 }
 ```
 
+Example Request:
+
+```bash
+curl -X POST http://localhost:3000/v1/chat/completion \
+  -H "Authorization: Bearer <your-llm-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "Hello!"}]}'
+```
+
+To test the llm locally we recommend using the `ngrok` tool to expose your local server to the internet.
+
+```bash
+ngrok http localhost:3000
+```
+
+This will expose your local server to the internet and you can then use the ngrok url to test the llm.
+
+```bash
+curl -X POST https://<ngrok-url>/v1/chat/completion \
+  -H "Authorization: Bearer <your-llm-api-key>" \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "Hello!"}]}'
+```
+
 Response:
 
 - Non-streaming: JSON response with completion
