@@ -1,7 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express'
 import { processChatCompletion } from '../services/openaiService'
 import { validateRequest } from '../middleware/auth'
-import { Readable } from 'stream'
 
 const router = Router()
 
@@ -37,12 +36,30 @@ router.post('/completion', (async (req: Request, res: Response) => {
     })
 
     if (stream) {
+      // Set SSE headers
       res.setHeader('Content-Type', 'text/event-stream')
       res.setHeader('Cache-Control', 'no-cache')
       res.setHeader('Connection', 'keep-alive')
-      if (result instanceof Readable) {
-        result.pipe(res)
+
+      if (result instanceof ReadableStream) {
+        // Handle Web ReadableStream
+        const reader = result.getReader()
+
+        // Process stream chunks
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            break
+          }
+
+          // Write chunks to response
+          res.write(value)
+        }
+
+        // End the response
+        res.end()
       } else {
+        // Fallback for non-streaming response
         res.json(result)
       }
     } else {

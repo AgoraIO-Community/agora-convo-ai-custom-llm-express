@@ -152,10 +152,10 @@ async function processStreamingRequest(requestOptions: any, fullMessages: ChatMe
   const { userId, channel, appId } = context
 
   // Make initial streaming request
-  const initialResponse = (await openai.chat.completions.create({
+  const stream = (await openai.chat.completions.create({
     ...requestOptions,
     stream: true,
-  })) as unknown as Stream<OpenAI.Chat.ChatCompletion>
+  })) as unknown as AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>
 
   // Create encoder
   const encoder = new TextEncoder()
@@ -168,41 +168,48 @@ async function processStreamingRequest(requestOptions: any, fullMessages: ChatMe
   return new ReadableStream({
     async start(controller) {
       try {
-        for await (const part of initialResponse) {
-          // Cast to any to access streaming delta property
-          const choice = part.choices[0] as ChatCompletion.Choice
-          const delta = choice?.finish_reason
-
-          // If partial function call data
-          if (delta === 'function_call') {
-            const fc = choice.message.tool_calls
-            fc?.forEach((toolCall) => {
-              if (toolCall.function.name) {
-                functionCallName = toolCall.function.name
-              }
-              if (toolCall.function.arguments) {
-                functionCallArgs += toolCall.function.arguments
-              }
-            })
-          }
+        for await (const part of stream) {
+          // Check if we have a delta
+          const choice = part.choices[0]
 
           // Send chunk downstream as SSE
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(part)}\n\n`))
+
+          // Handle function calls if needed
+          if (part.choices[0].finish_reason === 'function_call' || part.choices[0].finish_reason === 'tool_calls') {
+            // Extract function call from tool_calls or function_call (depending on model)
+            const toolCalls = part.choices[0].delta?.tool_calls || []
+
+            toolCalls.forEach((toolCall: any) => {
+              if (toolCall.function?.name) {
+                functionCallName = toolCall.function.name
+              }
+              if (toolCall.function?.arguments) {
+                functionCallArgs += toolCall.function.arguments
+              }
+            })
+
+            // Also check for legacy function_call format
+            const functionCall = part.choices[0].delta?.function_call
+            if (functionCall) {
+              if (functionCall.name) {
+                functionCallName = functionCall.name
+              }
+              if (functionCall.arguments) {
+                functionCallArgs += functionCall.arguments
+              }
+            }
+          }
 
           // If finish_reason is encountered, attempt function call
           if (part.choices[0].finish_reason) {
             if (functionCallName && functionCallArgs) {
               const fn = functionMap[functionCallName]
               if (fn) {
-                // Parse arguments
-                let parsedArgs
                 try {
-                  parsedArgs = JSON.parse(functionCallArgs)
-                } catch (err) {
-                  console.error('Failed to parse function call arguments:', err)
-                }
+                  // Parse arguments
+                  const parsedArgs = JSON.parse(functionCallArgs)
 
-                if (parsedArgs) {
                   // Execute function
                   const functionResult = await fn(appId, userId, channel, parsedArgs)
 
@@ -226,6 +233,9 @@ async function processStreamingRequest(requestOptions: any, fullMessages: ChatMe
                   for await (const part2 of finalResponse) {
                     controller.enqueue(encoder.encode(`data: ${JSON.stringify(part2)}\n\n`))
                   }
+                } catch (err) {
+                  console.error('Function call error:', err)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: 'Function call failed' })}\n\n`))
                 }
               } else {
                 console.error('Unknown function name:', functionCallName)
@@ -238,6 +248,10 @@ async function processStreamingRequest(requestOptions: any, fullMessages: ChatMe
             return
           }
         }
+
+        // Ensure we close the stream if we didn't encounter a finish_reason
+        controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+        controller.close()
       } catch (error) {
         console.error('OpenAI streaming error:', error)
         controller.error(error)
