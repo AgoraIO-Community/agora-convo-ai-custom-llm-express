@@ -1,6 +1,8 @@
 import { Router, Request, Response, RequestHandler } from 'express'
-import { processChatCompletion } from '../services/openaiService'
+import { processChatCompletion } from '../services/openaiCompletionsService'
+import { processResponses } from '../services/openaiResponsesService'
 import { validateRequest } from '../middleware/auth'
+import { config } from '../libs/utils'
 
 const router = Router()
 
@@ -27,7 +29,15 @@ router.post('/completion', (async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Missing "appId" in request body' })
     }
 
-    const result = await processChatCompletion(messages, {
+    // This server supports both the Chat Completions API and the Responses API
+    // Use either processChatCompletion or processResponses based on config
+    const processHandler = config.llm.useResponsesApi ? processResponses : processChatCompletion
+
+    console.log(
+      `Using ${config.llm.useResponsesApi ? 'OpenAI Responses API' : 'OpenAI Chat Completions API'} for request`,
+    )
+
+    const result = await processHandler(messages, {
       model,
       stream,
       channel,

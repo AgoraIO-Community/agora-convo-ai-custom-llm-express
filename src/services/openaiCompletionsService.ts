@@ -2,8 +2,7 @@ import OpenAI from 'openai'
 import { functions } from '../libs/toolDefinitions'
 import { functionMap } from '../libs/tools'
 import { getFormattedRagData } from './ragService'
-import { ChatCompletionMessageParam, ChatCompletion } from 'openai/resources/chat/completions'
-import { Stream } from 'openai/streaming'
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 import { config } from '../libs/utils'
 type ChatMessage = ChatCompletionMessageParam
 
