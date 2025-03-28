@@ -13,7 +13,7 @@ graph LR
     Server --> |Auth| AuthMiddleware[Auth Middleware]
     AuthMiddleware --> ChatRouter[Chat Router]
     ChatRouter --> OpenAIService[OpenAI Service]
-    OpenAIService --> |Get Context| RagService[RAG Service]
+    OpenAIService[OpenAI Services<br/>#40;Responses &amp; Completions#41;] --> |Get Context| RagService[RAG Service]
     RagService --> |Return Context| OpenAIService
     OpenAIService --> |System Prompt + RAG + ASR Text| OpenAIAPI[OpenAI API]
     OpenAIAPI --> |Response| OpenAIService
@@ -83,6 +83,27 @@ AGENT_ID=your_agent_id
 ```bash
 npm start
 ```
+
+## OpenAI Chat Completions & Responses API's
+
+This server supports two different OpenAI API implementations:
+
+1. **Chat Completions API** - The standard OpenAI chat completions endpoint
+2. **Responses API** - OpenAI's new Responses API
+
+For a detailed comparison of the two APIs, see the Open AI's [Responses vs Chat Completions](https://platform.openai.com/docs/guides/responses-vs-chat-completions) page.
+
+You can switch between these APIs using the `USE_RESPONSES_API` environment variable:
+
+```env
+# Use Responses API
+USE_RESPONSES_API=true
+
+# Use Chat Completions API
+USE_RESPONSES_API=false
+```
+
+Both APIs provide similar functionality but the Responses API offers improved performance because it emits semantic events detailing precisely what changed (e.g., specific text additions), so you can write integrations targeted at specific emitted events (e.g., text changes). Whereas the Chat Completions API continuously appends to the content field as tokens are generated—requiring you to manually track differences between each state.
 
 ### Build and Run with Docker
 
