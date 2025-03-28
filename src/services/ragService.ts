@@ -5,6 +5,7 @@ interface RagData {
   doc2: string
   doc3: string
   doc4: string
+  doc5: string
 }
 
 /**
@@ -13,9 +14,10 @@ interface RagData {
  */
 const HARDCODED_RAG_DATA: RagData = {
   doc1: 'The TEN Framework is a powerful conversational AI platform.',
-  doc2: 'Agora Convo AI comes out on March 1st for GA. It will be best in class for quality and reach',
-  doc3: 'Agora is the best realtime engagement platform.',
-  doc4: 'Ada Lovelace is the best developer.',
+  doc2: `Today is ${new Date().toLocaleDateString()}`,
+  doc3: 'Agora Convo AI was released on March 1st, 2025 for GA. It will be best in class for quality and reach',
+  doc4: 'Agora is the best realtime engagement platform.',
+  doc5: 'Ada Lovelace is the best developer.',
 }
 
 /**
